@@ -1,0 +1,97 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                                         Dr Trade AI MT4        |
+//|                                      https://www.forexroboteasy.com/        |
+//|                                           Developed by Forex Robot Easy Team |
+//+------------------------------------------------------------------+
+
+// Define the necessary input parameters
+input double RiskPercentage = 2.0; // Percentage of account balance to risk per trade
+input double StopLossPercentage = 1.5; // Percentage of trade entry price for stop loss
+input double TakeProfitPercentage = 2.0; // Percentage of trade entry price for take profit
+input int MaxOpenTrades = 5; // Maximum number of open trades at a time
+
+// Define global variables
+double AccountBalance;
+int TotalTrades;
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+   // Get the account balance
+   AccountBalance = AccountInfoDouble(ACCOUNT_BALANCE);
+
+   // Initialize trade counter
+   TotalTrades = 0;
+
+   return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+   // Print the total number of trades executed
+   Print('Total trades executed: ', TotalTrades);
+}
+
+//+------------------------------------------------------------------+
+//| Expert start function                                            |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+   // Check if there are already maximum number of open trades
+   if(PositionsTotal() >= MaxOpenTrades)
+      return;
+
+   // Calculate the lot size based on risk percentage and account balance
+   double LotSize = AccountBalance * RiskPercentage / 100 / StopLevel();
+
+   // Calculate the stop loss and take profit levels
+   double StopLoss = StopLossPercentage / 100 * SymbolInfoDouble(_Symbol, SYMBOL_POINT);
+   double TakeProfit = TakeProfitPercentage / 100 * SymbolInfoDouble(_Symbol, SYMBOL_POINT);
+
+   // Check market conditions and execute trading decisions
+   if(MarketCondition())
+   {
+      // Place a buy trade
+      if(BuyTrade(LotSize, StopLoss, TakeProfit))
+         TotalTrades++;
+   }
+   else
+   {
+      // Place a sell trade
+      if(SellTrade(LotSize, StopLoss, TakeProfit))
+         TotalTrades++;
+   }
+}
+
+//+------------------------------------------------------------------+
+//| Function to check market conditions                              |
+//+------------------------------------------------------------------+
+bool MarketCondition()
+{
+   // Insert market condition logic here
+   // Return true if it is a buy signal, false if it is a sell signal
+}
+
+//+------------------------------------------------------------------+
+//| Function to execute a buy trade                                   |
+//+------------------------------------------------------------------+
+bool BuyTrade(double lotSize, double stopLoss, double takeProfit)
+{
+   // Insert code to execute a buy trade here
+   // Return true if the trade is executed successfully, false otherwise
+}
+
+//+------------------------------------------------------------------+
+//| Function to execute a sell trade                                  |
+//+------------------------------------------------------------------+
+bool SellTrade(double lotSize, double stopLoss, double takeProfit)
+{
+   // Insert code to execute a sell trade here
+   // Return true if the trade is executed successfully, false otherwise
+}
